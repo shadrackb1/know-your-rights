@@ -1,12 +1,24 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Shield, BookOpen, MessageSquare, HelpCircle, Zap, Instagram, Youtube, Podcast } from 'lucide-react';
+import { ArrowRight, Shield, BookOpen, MessageSquare, HelpCircle, Zap, Instagram, Youtube, Podcast, Scale, Users, FileText, Landmark } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import AnimatedPage from '../components/AnimatedPage';
 import ScrollReveal from '../components/ScrollReveal';
 import ArticleCard from '../components/ArticleCard';
 import { CardSkeleton } from '../components/Skeleton';
 import { getArticles, type Article } from '../lib/articles';
+import {
+  ParticleField,
+  TextMorph,
+  MagneticButton,
+  FloatingOrbs,
+  CountUp,
+  GradientText,
+  RevealLine,
+  GlowCard,
+  StaggerText,
+  Typewriter,
+} from '../components/animations';
 
 const STEPS = [
   { icon: <HelpCircle size={24} />, title: "Browse", desc: "Explore guides organized by topic — police, tenants, labor, business." },
@@ -15,10 +27,10 @@ const STEPS = [
 ];
 
 const TOPICS = [
-  { id: "POLICE", label: "Police Encounters", desc: "Arrests, searches, roadblocks — know your rights.", icon: <Shield size={24} /> },
-  { id: "TENANTS", label: "Housing & Tenants", desc: "Eviction, deposits, rent increases.", icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> },
-  { id: "LABOR", label: "Employment & Labor", desc: "Wages, dismissal, leave, contracts.", icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> },
-  { id: "BUSINESS", label: "Consumer & Business", desc: "Refunds, licensing, contracts, debt.", icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> },
+  { id: "POLICE", label: "Police Encounters", desc: "Arrests, searches, roadblocks — know your rights.", icon: <Shield size={24} />, count: 4 },
+  { id: "TENANTS", label: "Housing & Tenants", desc: "Eviction, deposits, rent increases.", icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>, count: 4 },
+  { id: "LABOR", label: "Employment & Labor", desc: "Wages, dismissal, leave, contracts.", icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>, count: 4 },
+  { id: "BUSINESS", label: "Consumer & Business", desc: "Refunds, licensing, contracts, debt.", icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>, count: 4 },
 ];
 
 export default function Home() {
@@ -42,6 +54,10 @@ export default function Home() {
     <AnimatedPage className="flex-1 flex flex-col">
       {/* ── HERO ── */}
       <section ref={heroRef} className="relative min-h-[92vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+        {/* Particle background */}
+        <ParticleField count={40} color="#FFB300" speed={0.2} maxSize={2} />
+        <FloatingOrbs count={5} />
+
         {/* Background glows */}
         <motion.div className="absolute inset-0 z-0 pointer-events-none" style={{ y: yBg }}>
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full bg-primary/10 blur-[130px]" />
@@ -59,7 +75,14 @@ export default function Home() {
           <motion.h1 style={{ opacity: opText }} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }}
             className="text-5xl md:text-7xl lg:text-[5.5rem] font-display font-bold leading-[1.08] tracking-tight">
             <span className="text-text">Justice in</span><br />
-            <span className="gradient-text">your pocket.</span>
+            <span className="inline-flex items-center gap-3">
+              <GradientText from="#FFB300" via="#FFD54F" to="#FFB300">your</GradientText>
+              <TextMorph
+                words={['pocket.', 'hands.', 'reach.', 'control.']}
+                className="gradient-text"
+                interval={2500}
+              />
+            </span>
           </motion.h1>
 
           <motion.p style={{ opacity: opText }} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
@@ -69,20 +92,23 @@ export default function Home() {
 
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
             className="flex flex-col sm:flex-row items-center gap-3 mt-2">
-            <Link to="/library" className="group px-7 py-3 rounded-xl gradient-primary text-secondary font-display font-semibold text-sm shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all flex items-center gap-2">
-              Browse Library <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-            <Link to="/ask" className="px-7 py-3 rounded-xl border border-border text-text-muted hover:text-secondary hover:border-secondary/30 hover:bg-surface-hover transition-all font-display font-semibold text-sm flex items-center gap-2">
-              Ask a Question <HelpCircle size={16} />
-            </Link>
+            <MagneticButton className="group px-7 py-3 rounded-xl gradient-primary text-secondary font-display font-semibold text-sm shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all flex items-center gap-2">
+              <Link to="/library" className="flex items-center gap-2">
+                Browse Library <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </MagneticButton>
+            <MagneticButton className="px-7 py-3 rounded-xl border border-border text-text-muted hover:text-secondary hover:border-secondary/30 hover:bg-surface-hover transition-all font-display font-semibold text-sm flex items-center gap-2">
+              <Link to="/ask" className="flex items-center gap-2">
+                Ask a Question <HelpCircle size={16} />
+              </Link>
+            </MagneticButton>
           </motion.div>
 
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="flex items-center gap-3 mt-2">
             {[{ i: <span className="font-display font-bold text-sm">TT</span>, l: "TikTok" }, { i: <Instagram size={16} />, l: "Instagram" }, { i: <Youtube size={16} />, l: "YouTube" }, { i: <Podcast size={16} />, l: "Podcast" }].map(s => (
-              <a key={s.l} href="#" aria-label={s.l}
-                className="w-10 h-10 rounded-xl glass flex items-center justify-center text-text-dim hover:text-secondary transition-colors">
+              <MagneticButton key={s.l} className="w-10 h-10 rounded-xl glass flex items-center justify-center text-text-dim hover:text-secondary transition-colors">
                 {s.i}
-              </a>
+              </MagneticButton>
             ))}
           </motion.div>
         </div>
@@ -97,12 +123,38 @@ export default function Home() {
         </motion.div>
       </section>
 
+      {/* ── STATS BAR ── */}
+      <section className="px-4 md:px-8 py-10 border-y border-border bg-surface/30">
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+          {[
+            { icon: <FileText size={20} />, value: 16, suffix: '+', label: 'Legal Guides' },
+            { icon: <Scale size={20} />, value: 4, suffix: '', label: 'Topic Areas' },
+            { icon: <Users size={20} />, value: 8, suffix: '+', label: 'FAQs Answered' },
+            { icon: <Landmark size={20} />, value: 100, suffix: '%', label: 'Free Access' },
+          ].map((stat, i) => (
+            <ScrollReveal key={stat.label} delay={i * 0.1}>
+              <div className="flex flex-col items-center text-center gap-1">
+                <div className="text-secondary/60 mb-1">{stat.icon}</div>
+                <div className="font-display text-2xl md:text-3xl font-bold text-text">
+                  <CountUp end={stat.value} duration={1.5} suffix={stat.suffix} />
+                </div>
+                <div className="text-text-dim text-xs font-display uppercase tracking-wider">{stat.label}</div>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </section>
+
       {/* ── MISSION ── */}
       <section className="px-4 md:px-8 max-w-4xl mx-auto w-full py-24 md:py-32">
         <ScrollReveal>
           <div className="text-center">
+            <RevealLine className="flex justify-center mb-6" />
             <h2 className="text-3xl md:text-[2.75rem] font-display text-text mb-5 leading-tight">
-              Law shouldn't be a <span className="gradient-text">secret language</span>
+              Law shouldn't be a{' '}
+              <GradientText from="#FFB300" via="#C62828" to="#FFB300">
+                <StaggerText text="secret language" staggerDelay={0.04} />
+              </GradientText>
             </h2>
             <p className="text-text-muted text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
               Most Kenyans don't know their legal rights — and that's not their fault. The law is written in dense
@@ -123,13 +175,13 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {STEPS.map((s, i) => (
             <ScrollReveal key={s.title} delay={i * 0.1}>
-              <div className="glass rounded-2xl p-6 md:p-7 flex flex-col items-center text-center gap-4 h-full border border-border hover:border-secondary/20 transition-colors">
+              <GlowCard className="glass rounded-2xl p-6 md:p-7 flex flex-col items-center text-center gap-4 h-full border border-border hover:border-secondary/20 transition-colors">
                 <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center text-secondary shadow-lg shadow-primary/20">
                   {s.icon}
                 </div>
                 <h3 className="font-display text-lg text-text">{s.title}</h3>
                 <p className="text-text-muted text-sm leading-relaxed">{s.desc}</p>
-              </div>
+              </GlowCard>
             </ScrollReveal>
           ))}
         </div>
@@ -151,8 +203,11 @@ export default function Home() {
                   {t.icon}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-display text-base text-text group-hover:text-secondary transition-colors mb-0.5">{t.label}</h3>
-                  <p className="text-text-muted text-sm">{t.desc}</p>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-display text-base text-text group-hover:text-secondary transition-colors">{t.label}</h3>
+                    <span className="text-[10px] font-display font-bold text-text-dim bg-surface px-1.5 py-0.5 rounded-full">{t.count}</span>
+                  </div>
+                  <p className="text-text-muted text-sm mt-0.5">{t.desc}</p>
                 </div>
                 <ArrowRight size={16} className="text-text-dim group-hover:text-secondary group-hover:translate-x-0.5 transition-all shrink-0 mt-1" />
               </Link>
@@ -172,18 +227,19 @@ export default function Home() {
           {loading
             ? Array.from({ length: 4 }).map((_, i) => <div key={i}><CardSkeleton /></div>)
             : articles.slice(0, 4).map((a, i) => (
-                <div key={a.id}>
+                <ScrollReveal key={a.id} delay={i * 0.08}>
                   <ArticleCard article={a} index={i} />
-                </div>
+                </ScrollReveal>
               ))
           }
         </div>
         <ScrollReveal>
           <div className="flex justify-center mt-10">
-            <Link to="/library"
-              className="group px-6 py-2.5 rounded-xl border border-border text-text-muted hover:text-secondary hover:border-secondary/30 hover:bg-surface-hover transition-all font-display font-semibold text-sm flex items-center gap-2">
-              View All Guides <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-            </Link>
+            <MagneticButton className="group px-6 py-2.5 rounded-xl border border-border text-text-muted hover:text-secondary hover:border-secondary/30 hover:bg-surface-hover transition-all font-display font-semibold text-sm flex items-center gap-2">
+              <Link to="/library" className="flex items-center gap-2">
+                View All Guides <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </MagneticButton>
           </div>
         </ScrollReveal>
       </section>
@@ -192,22 +248,28 @@ export default function Home() {
       <section className="px-4 md:px-8 max-w-5xl mx-auto w-full pb-24">
         <ScrollReveal>
           <div className="glass rounded-3xl p-10 md:p-16 text-center border border-border relative overflow-hidden">
+            <ParticleField count={20} color="#FFB300" speed={0.15} maxSize={1.5} />
             <div className="absolute -top-[30%] -left-[10%] w-[400px] h-[400px] rounded-full bg-primary/8 blur-[80px] pointer-events-none" />
             <div className="absolute -bottom-[30%] -right-[10%] w-[350px] h-[350px] rounded-full bg-secondary/6 blur-[70px] pointer-events-none" />
             <div className="relative z-10">
-              <h2 className="text-2xl md:text-3xl font-display text-text mb-3">Still have questions?</h2>
+              <h2 className="text-2xl md:text-3xl font-display text-text mb-3">
+                Still have{' '}
+                <TextMorph words={['questions?', 'doubts?', 'concerns?']} className="gradient-text" interval={2000} />
+              </h2>
               <p className="text-text-muted text-sm max-w-md mx-auto mb-7 leading-relaxed">
                 No legal background required. Describe your situation and we'll point you to the facts.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Link to="/ask"
-                  className="group px-7 py-3 rounded-xl gradient-primary text-secondary font-display font-semibold text-sm shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all flex items-center gap-2">
-                  Ask a Question <MessageSquare size={16} />
-                </Link>
-                <Link to="/library"
-                  className="px-7 py-3 rounded-xl border border-border text-text-muted hover:text-secondary hover:border-secondary/30 hover:bg-surface-hover transition-all font-display font-semibold text-sm flex items-center gap-2">
-                  Browse Library <BookOpen size={16} />
-                </Link>
+                <MagneticButton className="group px-7 py-3 rounded-xl gradient-primary text-secondary font-display font-semibold text-sm shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all flex items-center gap-2">
+                  <Link to="/ask" className="flex items-center gap-2">
+                    Ask a Question <MessageSquare size={16} />
+                  </Link>
+                </MagneticButton>
+                <MagneticButton className="px-7 py-3 rounded-xl border border-border text-text-muted hover:text-secondary hover:border-secondary/30 hover:bg-surface-hover transition-all font-display font-semibold text-sm flex items-center gap-2">
+                  <Link to="/library" className="flex items-center gap-2">
+                    Browse Library <BookOpen size={16} />
+                  </Link>
+                </MagneticButton>
               </div>
             </div>
           </div>

@@ -7,6 +7,7 @@ import ScrollReveal from '../components/ScrollReveal';
 import { ArticleListRow } from '../components/ArticleCard';
 import { ListSkeleton } from '../components/Skeleton';
 import { getArticles, type Article } from '../lib/articles';
+import { FloatingOrbs, TextMorph, RevealLine } from '../components/animations';
 
 const TOPICS = ["ALL", "POLICE", "TENANTS", "LABOR", "BUSINESS"];
 
@@ -55,9 +56,12 @@ export default function Library() {
   };
 
   return (
-    <AnimatedPage className="flex-1 px-4 py-10 md:px-8 max-w-4xl mx-auto w-full flex flex-col gap-8">
+    <AnimatedPage className="flex-1 px-4 py-10 md:px-8 max-w-4xl mx-auto w-full flex flex-col gap-8 relative">
+      <FloatingOrbs count={3} />
+
       {/* Header */}
       <ScrollReveal>
+        <RevealLine className="mb-4" />
         <div className="flex items-center gap-3 mb-2">
           <div className="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center">
             <BookOpen size={18} className="text-secondary" />
@@ -72,11 +76,20 @@ export default function Library() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-dim group-focus-within:text-secondary transition-colors" size={18} />
           <input
             type="text"
-            placeholder="Search your rights..."
+            placeholder=""
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full glass border border-border rounded-xl py-3 pl-11 pr-10 text-text placeholder:text-text-dim focus:outline-none focus:border-secondary/40 focus:shadow-[0_0_20px_rgba(255,179,0,0.08)] transition-all text-sm"
           />
+          {!search && (
+            <span className="absolute left-11 top-1/2 -translate-y-1/2 text-text-dim text-sm pointer-events-none">
+              <TextMorph
+                words={['Search your rights...', 'Try "eviction"...', 'Try "minimum wage"...', 'Try "roadblock"...', 'Try "refund"...']}
+                interval={2500}
+                duration={0.3}
+              />
+            </span>
+          )}
           {search && (
             <button type="button" onClick={() => setSearch("")}
               className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-text-dim hover:text-secondary transition-colors">
@@ -100,8 +113,12 @@ export default function Library() {
 
       {/* Topic pills */}
       <div className="flex overflow-x-auto gap-2 pb-1 hide-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
-        {TOPICS.map(t => (
-          <motion.button key={t} whileTap={{ scale: 0.95 }} onClick={() => setTopic(t)}
+        {TOPICS.map((t, i) => (
+          <motion.button key={t} whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.05 }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05 }}
+            onClick={() => setTopic(t)}
             className={`shrink-0 px-3.5 py-1.5 rounded-lg font-display text-xs font-semibold uppercase tracking-wider transition-all ${
               activeTopic === t
                 ? 'bg-secondary text-bg shadow-lg shadow-secondary/15'
@@ -112,6 +129,17 @@ export default function Library() {
         ))}
       </div>
 
+      {/* Results count */}
+      {!loading && (
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-xs text-text-dim font-display"
+        >
+          {filtered.length} result{filtered.length !== 1 ? 's' : ''} found
+        </motion.p>
+      )}
+
       {/* List */}
       <div className="flex flex-col gap-3">
         <AnimatePresence mode="sync">
@@ -121,12 +149,12 @@ export default function Library() {
             </motion.div>
           ) : filtered.length > 0 ? (
             filtered.map((article, i) => (
-              <motion.div key={article.id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}>
+              <motion.div key={article.id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04, type: 'spring', stiffness: 200, damping: 20 }}>
                 <ArticleListRow article={article} />
               </motion.div>
             ))
           ) : (
-            <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            <motion.div key="empty" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
               className="py-16 flex flex-col items-center text-center glass rounded-2xl">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
                 <Search size={20} className="text-primary" />
