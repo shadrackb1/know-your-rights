@@ -24,6 +24,22 @@ const faqs = [
     question: "What should I do if I am unfairly dismissed?",
     answer: "You have the right to challenge an unfair dismissal through the labor office or the Employment and Labour Relations Court. You must typically file your claim within 3 years, but taking immediate action is recommended.",
   },
+  {
+    question: "Can the police stop me at a roadblock and search my car?",
+    answer: "Yes, police can stop you at a roadblock and check your documents (license, insurance, logbook, ID). However, they cannot search your vehicle or personal belongings without reasonable suspicion that you are carrying illegal items. You may politely ask whether the search is based on reasonable suspicion. If you believe your rights were violated, report to IPOA.",
+  },
+  {
+    question: "Can my landlord keep my full deposit?",
+    answer: "No. Your landlord can only deduct from your deposit for unpaid rent or damage beyond normal wear and tear. They must return the deposit within 30 days of the tenancy ending, with itemized receipts for any deductions. If they fail to do so, you can file a complaint at the Business Premises Rent Tribunal or small claims court.",
+  },
+  {
+    question: "Do I need a license to run a small business from home?",
+    answer: "Yes. Every business in Kenya requires a business permit from the county government, even if you are operating from home. Depending on your type of business, you may also need additional permits (e.g., food handling, public health). You can apply through your county's eCitizen portal. Operating without a permit can result in fines or closure.",
+  },
+  {
+    question: "Can a shop refuse to give me a refund?",
+    answer: "If the goods are defective, a shop cannot refuse a refund — 'no refund' policies are illegal for faulty products under the Consumer Protection Act 2012. You are entitled to a full refund, repair, or replacement within 30 days of purchase. For change of mind, the shop may have its own policy, but they must clearly display it before purchase.",
+  },
 ];
 
 function FAQAccordion({ faq }: { faq: (typeof faqs)[0] }) {
@@ -213,7 +229,9 @@ export default function Ask() {
           <div className="flex flex-col gap-3">
             {[
               { id: "3", tag: "TENANTS", title: "Can a landlord lock my house for rent arrears?" },
-              { id: "4", tag: "LABOR", title: "What are my rights if I'm fired without notice?" },
+              { id: "2", tag: "LABOR", title: "What are my rights if I'm fired without notice?" },
+              { id: "6", tag: "POLICE", title: "How does bail work in Kenya?" },
+              { id: "14", tag: "BUSINESS", title: "Can debt collectors harass me?" },
             ].map((item) => (
               <div key={item.id}>
                 <TiltCard>
