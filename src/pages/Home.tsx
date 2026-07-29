@@ -4,7 +4,8 @@ import { ArrowRight, Shield, BookOpen, MessageSquare, HelpCircle, Zap, Instagram
 import { motion, useScroll, useTransform } from 'motion/react';
 import AnimatedPage from '../components/AnimatedPage';
 import ScrollReveal from '../components/ScrollReveal';
-import ArticleCard, { CardSkeleton } from '../components/ArticleCard';
+import ArticleCard from '../components/ArticleCard';
+import { CardSkeleton } from '../components/Skeleton';
 import { getArticles, type Article } from '../lib/articles';
 
 const STEPS = [
