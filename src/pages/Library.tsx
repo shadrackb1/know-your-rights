@@ -1,7 +1,7 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { Search, ChevronRight, BookOpen, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import AnimatedPage from '../components/AnimatedPage';
 import TiltCard from '../components/TiltCard';
 import { ArticleListSkeleton } from '../components/Skeleton';
@@ -128,8 +128,11 @@ export default function Library() {
 
       {/* Article List */}
       <div className="flex flex-col gap-3">
+        <AnimatePresence mode="sync">
         {loading ? (
-          <ArticleListSkeleton />
+          <motion.div key="skeleton" exit={{ opacity: 0, transition: { duration: 0.1 } }}>
+            <ArticleListSkeleton />
+          </motion.div>
         ) : filtered.length > 0 ? (
           filtered.map((article, index) => (
             <motion.div
@@ -163,6 +166,7 @@ export default function Library() {
           ))
         ) : (
           <motion.div
+            key="empty-state"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="py-16 flex flex-col items-center text-center glass-panel rounded-2xl"
@@ -180,6 +184,7 @@ export default function Library() {
             </button>
           </motion.div>
         )}
+        </AnimatePresence>
       </div>
     </AnimatedPage>
   );

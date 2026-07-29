@@ -39,7 +39,7 @@ export default function TiltCard({ children, className = "" }: { children: React
       style={{ rotateY, rotateX, transformStyle: "preserve-3d" }}
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.99 }}
-      className={`relative ${className}`}
+      className={`relative group h-full ${className}`}
     >
       <motion.div
         className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition duration-300 group-hover:opacity-100 z-10"
