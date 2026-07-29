@@ -1,5 +1,3 @@
-import React from 'react';
-import { motion } from 'motion/react';
 import TiltCard from './TiltCard';
 
 export function Skeleton({ className = "" }: { className?: string }) {

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -9,12 +10,12 @@
   --color-on-surface: #1A1A1A;
   --color-on-surface-variant: #4A4A4A;
   --color-outline: rgba(122, 35, 49, 0.3);
-  
+  --color-success: #2D6A4F;
+  --color-error: #D32F2F;
+
   --font-body: 'Inter', sans-serif;
   --font-heading: 'Fredoka', sans-serif;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 body {
   font-family: var(--font-body);
