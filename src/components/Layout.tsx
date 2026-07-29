@@ -2,7 +2,6 @@ import { ReactNode, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Scale } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
-import CursorGlow from './CursorGlow';
 
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -15,11 +14,9 @@ export default function Layout({ children }: { children: ReactNode }) {
   const headerBorder = useTransform(scrollY, [0, 80], ["rgba(255, 179, 0, 0)", "rgba(255, 179, 0, 0.1)"]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-on-background relative overflow-x-hidden">
-      <CursorGlow />
-
+    <div className="min-h-screen flex flex-col bg-background text-on-background">
       {/* Ambient background glow */}
-      <div className="fixed inset-0 pointer-events-none z-0">
+      <div className="pointer-events-none fixed inset-0 z-0">
         <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-primary/5 blur-[120px]" />
         <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-secondary/5 blur-[120px]" />
       </div>
@@ -32,11 +29,11 @@ export default function Layout({ children }: { children: ReactNode }) {
           WebkitBackdropFilter: headerBlur,
           borderBottomColor: headerBorder,
         }}
-        className="fixed top-0 w-full z-50 border-b border-transparent"
+        className="fixed top-0 left-0 right-0 z-50 border-b border-transparent"
       >
-        <div className="max-w-7xl mx-auto px-4 md:px-8 w-full flex items-center justify-between h-16 md:h-18">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 w-full flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-shadow">
+            <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center shadow-lg shadow-primary/30">
               <Scale size={18} className="text-secondary" />
             </div>
             <span className="font-heading text-xl font-bold text-on-background tracking-wide hidden sm:inline">
