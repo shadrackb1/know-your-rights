@@ -1,6 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { Search, ChevronRight, BookOpen, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import AnimatedPage from '../components/AnimatedPage';
 import TiltCard from '../components/TiltCard';
@@ -11,8 +11,11 @@ import { getArticles, type Article } from '../lib/articles';
 const topics = ["ALL", "POLICE", "TENANTS", "LABOR", "BUSINESS"];
 
 export default function Library() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialTopic = searchParams.get('topic')?.toUpperCase() || "ALL";
+  const validTopics = ["ALL", "POLICE", "TENANTS", "LABOR", "BUSINESS"];
   const [search, setSearch] = useState("");
-  const [activeTopic, setActiveTopic] = useState("ALL");
+  const [activeTopic, setActiveTopic] = useState(validTopics.includes(initialTopic) ? initialTopic : "ALL");
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
@@ -114,7 +117,10 @@ export default function Library() {
           <motion.button
             whileTap={{ scale: 0.95 }}
             key={topic}
-            onClick={() => setActiveTopic(topic)}
+            onClick={() => {
+              setActiveTopic(topic);
+              setSearchParams(topic === 'ALL' ? {} : { topic: topic.toLowerCase() });
+            }}
             className={`shrink-0 px-3.5 py-1.5 rounded-full font-heading text-xs uppercase tracking-wider transition-all duration-200 ${
               activeTopic === topic
                 ? 'bg-secondary text-background font-bold shadow-lg shadow-secondary/20'
@@ -177,7 +183,7 @@ export default function Library() {
             <h3 className="font-heading text-xl text-on-background mb-2">No results found</h3>
             <p className="text-on-surface-variant text-sm">Try different keywords or clear your filters.</p>
             <button
-              onClick={() => { setSearch(""); setActiveTopic("ALL"); }}
+              onClick={() => { setSearch(""); setActiveTopic("ALL"); setSearchParams({}); }}
               className="mt-5 px-5 py-2 rounded-xl bg-secondary/10 text-secondary font-heading text-sm font-semibold border border-secondary/20 hover:bg-secondary/20 transition-colors"
             >
               Clear Filters

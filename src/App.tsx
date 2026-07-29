@@ -14,17 +14,15 @@ import Ask from './pages/Ask';
 function AnimatedRoutes() {
   const location = useLocation();
   return (
-    <AnimatePresence mode="wait">
-      <div key={location.pathname}>
-        <Routes location={location}>
+    <AnimatePresence mode="sync">
+      <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
         <Route path="/library" element={<Library />} />
         <Route path="/article/:id" element={<Article />} />
         <Route path="/ask" element={<Ask />} />
         <Route path="/profile" element={<div className="p-8 text-center text-primary">Profile Page (Coming Soon)</div>} />
         <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </div>
+      </Routes>
     </AnimatePresence>
   );
 }
