@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #7A2331;
+  --color-secondary: #D9A441;
+  --color-background: #F1ECD9;
+  --color-surface: rgba(255, 255, 255, 0.5);
+  --color-on-background: #1A1A1A;
+  --color-on-surface: #1A1A1A;
+  --color-on-surface-variant: #4A4A4A;
+  --color-outline: rgba(122, 35, 49, 0.3);
+  
+  --font-body: 'Inter', sans-serif;
+  --font-heading: 'Fredoka', sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.blob-shape {
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 32px 0 rgba(122, 35, 49, 0.05);
+}
+
+.hover-glow {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 8px 32px 0 rgba(122, 35, 49, 0.1), 0 0 20px rgba(217, 164, 65, 0.3);
+  border-color: rgba(217, 164, 65, 0.6);
+}
+
+.input-focus-glow {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.input-focus-glow:focus-within {
+  box-shadow: 0 0 15px rgba(217, 164, 65, 0.3);
+  border-color: rgba(217, 164, 65, 0.7);
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.pill-badge {
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  text-transform: uppercase;
+  font-weight: 700;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(122, 35, 49, 0.03) 25%,
+    rgba(122, 35, 49, 0.08) 50%,
+    rgba(122, 35, 49, 0.03) 75%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 1rem;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
