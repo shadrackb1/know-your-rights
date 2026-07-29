@@ -16,8 +16,6 @@ let db: ReturnType<typeof getFirestore> | null = null;
 try {
   const app = initializeApp(firebaseConfig);
   db = getFirestore(app);
-} catch {
-  db = null;
-}
+} catch { db = null; }
 
 export { db };

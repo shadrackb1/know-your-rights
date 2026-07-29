@@ -1,195 +1,144 @@
 import { useState, useEffect, type FormEvent } from 'react';
-import { Search, ChevronRight, BookOpen, X } from 'lucide-react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Search, BookOpen, X } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import AnimatedPage from '../components/AnimatedPage';
-import TiltCard from '../components/TiltCard';
-import { ArticleListSkeleton } from '../components/Skeleton';
 import ScrollReveal from '../components/ScrollReveal';
+import { ArticleListRow } from '../components/ArticleCard';
+import { ListSkeleton } from '../components/Skeleton';
 import { getArticles, type Article } from '../lib/articles';
 
-const topics = ["ALL", "POLICE", "TENANTS", "LABOR", "BUSINESS"];
+const TOPICS = ["ALL", "POLICE", "TENANTS", "LABOR", "BUSINESS"];
 
 export default function Library() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const initialTopic = searchParams.get('topic')?.toUpperCase() || "ALL";
-  const validTopics = ["ALL", "POLICE", "TENANTS", "LABOR", "BUSINESS"];
+  const [params, setParams] = useSearchParams();
+  const initial = params.get('topic')?.toUpperCase();
+  const validInitial = TOPICS.includes(initial || '') ? initial! : "ALL";
+
   const [search, setSearch] = useState("");
-  const [activeTopic, setActiveTopic] = useState(validTopics.includes(initialTopic) ? initialTopic : "ALL");
+  const [activeTopic, setActiveTopic] = useState(validInitial);
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
   useEffect(() => {
     let cancelled = false;
-    getArticles().then((data) => {
-      if (!cancelled) {
-        setArticles(data);
-        setLoading(false);
-      }
-    });
+    getArticles().then((d) => { if (!cancelled) { setArticles(d); setLoading(false); } });
     return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
-    const saved = localStorage.getItem('recentSearches');
-    if (saved) {
-      try { setRecentSearches(JSON.parse(saved)); } catch {}
-    }
+    try {
+      const saved = localStorage.getItem('kyr-recent');
+      if (saved) setRecentSearches(JSON.parse(saved));
+    } catch {}
   }, []);
 
-  const handleSearchSubmit = (e: FormEvent) => {
+  const submitSearch = (e: FormEvent) => {
     e.preventDefault();
-    if (!search.trim()) return;
     const term = search.trim();
-    const updated = [term, ...recentSearches.filter((t) => t.toLowerCase() !== term.toLowerCase())].slice(0, 5);
+    if (!term) return;
+    const updated = [term, ...recentSearches.filter(t => t.toLowerCase() !== term.toLowerCase())].slice(0, 5);
     setRecentSearches(updated);
-    localStorage.setItem('recentSearches', JSON.stringify(updated));
+    try { localStorage.setItem('kyr-recent', JSON.stringify(updated)); } catch {}
   };
 
-  const filtered = articles.filter((a) => {
-    const matchesSearch = a.title.toLowerCase().includes(search.toLowerCase()) || a.summary.toLowerCase().includes(search.toLowerCase());
-    const matchesTopic = activeTopic === "ALL" || a.tag === activeTopic;
-    return matchesSearch && matchesTopic;
+  const filtered = articles.filter(a => {
+    const matchSearch = !search || a.title.toLowerCase().includes(search.toLowerCase()) || a.summary.toLowerCase().includes(search.toLowerCase());
+    const matchTopic = activeTopic === "ALL" || a.tag === activeTopic;
+    return matchSearch && matchTopic;
   });
 
+  const setTopic = (t: string) => {
+    setActiveTopic(t);
+    setParams(t === "ALL" ? {} : { topic: t.toLowerCase() });
+  };
+
   return (
-    <AnimatedPage className="flex-1 px-4 py-12 md:px-8 max-w-5xl mx-auto w-full flex flex-col gap-10">
+    <AnimatedPage className="flex-1 px-4 py-10 md:px-8 max-w-4xl mx-auto w-full flex flex-col gap-8">
       {/* Header */}
       <ScrollReveal>
-        <div className="flex flex-col gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-lg shadow-primary/20">
-              <BookOpen size={20} className="text-secondary" />
-            </div>
-            <div>
-              <h1 className="text-4xl md:text-5xl font-heading text-on-background leading-tight">
-                Rights Library
-              </h1>
-              <p className="text-on-surface-variant text-sm mt-1">
-                {articles.length} articles on your legal rights
-              </p>
-            </div>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center">
+            <BookOpen size={18} className="text-secondary" />
           </div>
-
-          <form onSubmit={handleSearchSubmit} className="relative w-full group">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search className="text-on-surface-variant group-focus-within:text-secondary transition-colors" size={20} />
-            </div>
-            <input
-              type="text"
-              placeholder="Search your rights..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full glass-panel border border-outline rounded-2xl py-3.5 pl-12 pr-12 text-on-background placeholder:text-on-surface-variant/60 input-focus-glow transition-all outline-none text-sm"
-            />
-            {search && (
-              <button
-                type="button"
-                onClick={() => setSearch("")}
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-on-surface-variant hover:text-secondary transition-colors"
-              >
-                <X size={18} />
-              </button>
-            )}
-          </form>
-
-          {recentSearches.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2 -mt-4">
-              <span className="text-xs text-on-surface-variant/60">Recent:</span>
-              {recentSearches.map((term, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSearch(term)}
-                  className="px-3 py-1 rounded-full border border-outline bg-surface/50 text-xs text-on-surface-variant hover:border-secondary/30 hover:text-secondary transition-colors"
-                >
-                  {term}
-                </button>
-              ))}
-            </div>
-          )}
+          <div>
+            <h1 className="text-3xl md:text-4xl font-display text-text leading-tight">Rights Library</h1>
+            <p className="text-text-muted text-sm mt-0.5">{articles.length} articles on your legal rights</p>
+          </div>
         </div>
+
+        <form onSubmit={submitSearch} className="relative group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-dim group-focus-within:text-secondary transition-colors" size={18} />
+          <input
+            type="text"
+            placeholder="Search your rights..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full glass border border-border rounded-xl py-3 pl-11 pr-10 text-text placeholder:text-text-dim focus:outline-none focus:border-secondary/40 focus:shadow-[0_0_20px_rgba(255,179,0,0.08)] transition-all text-sm"
+          />
+          {search && (
+            <button type="button" onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-text-dim hover:text-secondary transition-colors">
+              <X size={16} />
+            </button>
+          )}
+        </form>
+
+        {recentSearches.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2 mt-3">
+            <span className="text-xs text-text-dim">Recent:</span>
+            {recentSearches.map((term, i) => (
+              <button key={i} onClick={() => setSearch(term)}
+                className="px-2.5 py-1 rounded-lg border border-border bg-surface/50 text-xs text-text-muted hover:border-secondary/30 hover:text-secondary transition-colors">
+                {term}
+              </button>
+            ))}
+          </div>
+        )}
       </ScrollReveal>
 
-      {/* Filter Pills */}
-      <div className="flex overflow-x-auto gap-2 pb-1 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
-        {topics.map((topic) => (
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            key={topic}
-            onClick={() => {
-              setActiveTopic(topic);
-              setSearchParams(topic === 'ALL' ? {} : { topic: topic.toLowerCase() });
-            }}
-            className={`shrink-0 px-3.5 py-1.5 rounded-full font-heading text-xs uppercase tracking-wider transition-all duration-200 ${
-              activeTopic === topic
-                ? 'bg-secondary text-background font-bold shadow-lg shadow-secondary/20'
-                : 'bg-surface text-on-surface-variant border border-outline hover:border-secondary/30 hover:text-on-background'
-            }`}
-          >
-            {topic}
+      {/* Topic pills */}
+      <div className="flex overflow-x-auto gap-2 pb-1 hide-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+        {TOPICS.map(t => (
+          <motion.button key={t} whileTap={{ scale: 0.95 }} onClick={() => setTopic(t)}
+            className={`shrink-0 px-3.5 py-1.5 rounded-lg font-display text-xs font-semibold uppercase tracking-wider transition-all ${
+              activeTopic === t
+                ? 'bg-secondary text-bg shadow-lg shadow-secondary/15'
+                : 'bg-surface text-text-muted border border-border hover:border-secondary/25 hover:text-text'
+            }`}>
+            {t}
           </motion.button>
         ))}
       </div>
 
-      {/* Article List */}
+      {/* List */}
       <div className="flex flex-col gap-3">
         <AnimatePresence mode="sync">
-        {loading ? (
-          <motion.div key="skeleton" exit={{ opacity: 0, transition: { duration: 0.1 } }}>
-            <ArticleListSkeleton />
-          </motion.div>
-        ) : filtered.length > 0 ? (
-          filtered.map((article, index) => (
-            <motion.div
-              key={article.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.06 }}
-            >
-              <TiltCard>
-                <Link
-                  to={`/article/${article.id}`}
-                  className="glass-panel p-5 rounded-2xl border border-outline flex flex-col sm:flex-row gap-4 sm:items-center justify-between group hover-glow block"
-                >
-                  <div className="flex flex-col gap-2 items-start flex-1 pr-4">
-                    <span className="tag-chip">{article.tag}</span>
-                    <h3 className="text-lg font-heading text-on-background group-hover:text-secondary transition-colors leading-snug">
-                      {article.title}
-                    </h3>
-                    <p className="text-on-surface-variant text-sm line-clamp-1">
-                      {article.summary}
-                    </p>
-                  </div>
-                  <div className="shrink-0">
-                    <div className="w-10 h-10 rounded-xl border border-outline flex items-center justify-center text-on-surface-variant group-hover:text-secondary group-hover:border-secondary/30 group-hover:bg-secondary/5 transition-all">
-                      <ChevronRight size={18} />
-                    </div>
-                  </div>
-                </Link>
-              </TiltCard>
+          {loading ? (
+            <motion.div key="skel" exit={{ opacity: 0, transition: { duration: 0.1 } }}>
+              <ListSkeleton />
             </motion.div>
-          ))
-        ) : (
-          <motion.div
-            key="empty-state"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="py-16 flex flex-col items-center text-center glass-panel rounded-2xl"
-          >
-            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-              <Search size={24} className="text-primary" />
-            </div>
-            <h3 className="font-heading text-xl text-on-background mb-2">No results found</h3>
-            <p className="text-on-surface-variant text-sm">Try different keywords or clear your filters.</p>
-            <button
-              onClick={() => { setSearch(""); setActiveTopic("ALL"); setSearchParams({}); }}
-              className="mt-5 px-5 py-2 rounded-xl bg-secondary/10 text-secondary font-heading text-sm font-semibold border border-secondary/20 hover:bg-secondary/20 transition-colors"
-            >
-              Clear Filters
-            </button>
-          </motion.div>
-        )}
+          ) : filtered.length > 0 ? (
+            filtered.map((article, i) => (
+              <motion.div key={article.id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}>
+                <ArticleListRow article={article} />
+              </motion.div>
+            ))
+          ) : (
+            <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              className="py-16 flex flex-col items-center text-center glass rounded-2xl">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                <Search size={20} className="text-primary" />
+              </div>
+              <h3 className="font-display text-lg text-text mb-1">No results found</h3>
+              <p className="text-text-muted text-sm">Try different keywords or clear your filters.</p>
+              <button onClick={() => { setSearch(""); setTopic("ALL"); }}
+                className="mt-4 px-5 py-2 rounded-xl bg-secondary/10 text-secondary font-display text-sm font-semibold border border-secondary/20 hover:bg-secondary/15 transition-colors">
+                Clear Filters
+              </button>
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
     </AnimatedPage>

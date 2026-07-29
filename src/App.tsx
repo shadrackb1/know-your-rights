@@ -1,9 +1,4 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'motion/react';
 import Layout from './components/Layout';
 import Home from './pages/Home';
@@ -20,8 +15,7 @@ function AnimatedRoutes() {
         <Route path="/library" element={<Library />} />
         <Route path="/article/:id" element={<Article />} />
         <Route path="/ask" element={<Ask />} />
-        <Route path="/profile" element={<div className="p-8 text-center text-primary">Profile Page (Coming Soon)</div>} />
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>
   );
@@ -29,10 +23,10 @@ function AnimatedRoutes() {
 
 export default function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Layout>
         <AnimatedRoutes />
       </Layout>
-    </Router>
+    </BrowserRouter>
   );
 }
