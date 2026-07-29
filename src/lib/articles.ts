@@ -31,14 +31,7 @@ export interface Question {
   answered?: boolean;
 }
 
-function withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms)),
-  ]);
-}
-
-const fallbackArticles: Article[] = [
+const FALLBACK: Article[] = [
   {
     id: '1',
     title: "Police Encounters: What are your rights?",
@@ -75,15 +68,24 @@ const fallbackArticles: Article[] = [
     imageUrl: "https://images.unsplash.com/photo-1555252113-fdfc37ceda33?auto=format&fit=crop&w=800&q=80",
     type: "video",
   },
+  {
+    id: '5',
+    title: "Consumer Rights & Defective Goods",
+    tag: "BUSINESS",
+    summary: "Can a shop refuse a refund? What the Consumer Protection Act says.",
+    description: "The Consumer Protection Act 2012 gives you the right to return defective goods for a full refund, repair, or replacement within 30 days of purchase.",
+    imageUrl: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=800&q=80",
+    type: "article",
+  },
 ];
 
-const fallbackLibrary: Article[] = [
+const FALLBACK_LIB: Article[] = [
   {
     id: '1',
     title: "Understanding Traffic Stops & Search Rights",
     tag: "POLICE",
     summary: "Can a police officer search your car without a warrant? Know the boundaries.",
-    description: "Police officers at traffic stops can check your driving license, insurance, and inspection certificate. However, searching your trunk or personal bags requires reasonable suspicion of a crime or a court warrant.",
+    description: "Police officers at traffic stops can check your driving license, insurance, and inspection certificate. Searching your trunk or personal bags requires reasonable suspicion or a court warrant.",
     imageUrl: "https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=800&q=80",
     type: "article",
   },
@@ -92,7 +94,7 @@ const fallbackLibrary: Article[] = [
     title: "Rent Increases: What Notice is Required?",
     tag: "TENANTS",
     summary: "A landlord cannot arbitrarily raise rent without formal written notice and a waiting period.",
-    description: "The Landlord and Tenant Act requires written notice of at least one month before any rent increase. The notice must specify the current rent, proposed new rent, and the effective date.",
+    description: "The Landlord and Tenant Act requires written notice of at least one month before any rent increase.",
     imageUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
     type: "article",
   },
@@ -101,7 +103,7 @@ const fallbackLibrary: Article[] = [
     title: "Overtime Pay Guidelines",
     tag: "LABOR",
     summary: "When you are entitled to overtime pay and the legal limits on working hours in Kenya.",
-    description: "Under the Employment Act, normal working hours are 52 hours per week. Any work beyond this must be compensated at 1.5 times the normal hourly rate. Work on public holidays must be compensated at double the normal rate.",
+    description: "Normal working hours are 52 hours per week. Work beyond this must be compensated at 1.5x the normal rate.",
     imageUrl: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80",
     type: "article",
   },
@@ -110,38 +112,46 @@ const fallbackLibrary: Article[] = [
     title: "Consumer Rights & Defective Goods",
     tag: "BUSINESS",
     summary: "Can a shop refuse a refund on a defective product? What the Consumer Protection Act says.",
-    description: "The Consumer Protection Act 2012 gives you the right to return defective goods for a full refund, repair, or replacement within 30 days of purchase. A shop cannot refuse a valid return by citing store policy.",
+    description: "The Consumer Protection Act 2012 gives you the right to return defective goods for a full refund, repair, or replacement within 30 days of purchase.",
     imageUrl: "https://images.unsplash.com/photo-1555252113-fdfc37ceda33?auto=format&fit=crop&w=800&q=80",
     type: "article",
   },
 ];
 
+// Return fallback data immediately. Firestore is an optional enhancement.
 export async function getArticles(): Promise<Article[]> {
-  if (!db) return fallbackArticles;
+  if (!db) return FALLBACK;
   try {
     const q = query(collection(db, 'articles'), orderBy('createdAt', 'desc'));
-    const snapshot = await withTimeout(getDocs(q), 5000, null);
-    if (!snapshot || snapshot.empty) return fallbackArticles;
+    const snapshot = await Promise.race([
+      getDocs(q),
+      new Promise<null>((r) => setTimeout(() => r(null), 2000)),
+    ]);
+    if (!snapshot || snapshot.empty) return FALLBACK;
     return snapshot.docs.map((d) => ({ id: d.id, ...d.data() })) as Article[];
   } catch {
-    return fallbackArticles;
+    return FALLBACK;
   }
 }
 
 export async function getArticleById(id: string): Promise<Article | null> {
-  if (!db) return fallbackArticles.find((a) => a.id === id) || null;
+  const local = FALLBACK.find((a) => a.id === id) || FALLBACK_LIB.find((a) => a.id === id);
+  if (!db) return local;
   try {
     const ref = doc(db, 'articles', id);
-    const snap = await withTimeout(getDoc(ref), 5000, null);
-    if (!snap || !snap.exists()) return fallbackArticles.find((a) => a.id === id) || null;
+    const snap = await Promise.race([
+      getDoc(ref),
+      new Promise<null>((r) => setTimeout(() => r(null), 2000)),
+    ]);
+    if (!snap || !snap.exists()) return local;
     return { id: snap.id, ...snap.data() } as Article;
   } catch {
-    return fallbackArticles.find((a) => a.id === id) || null;
+    return local;
   }
 }
 
 export async function submitQuestion(data: Question): Promise<string> {
-  if (!db) throw new Error('Offline');
+  if (!db) throw new Error('Cannot submit while offline');
   const docRef = await addDoc(collection(db, 'questions'), {
     ...data,
     createdAt: serverTimestamp(),
@@ -149,5 +159,3 @@ export async function submitQuestion(data: Question): Promise<string> {
   });
   return docRef.id;
 }
-
-export { fallbackArticles, fallbackLibrary };
