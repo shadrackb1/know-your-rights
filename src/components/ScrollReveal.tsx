@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import { motion } from 'motion/react';
 
 export default function ScrollReveal({ 
@@ -5,7 +6,7 @@ export default function ScrollReveal({
   className = "", 
   delay = 0 
 }: { 
-  children: React.ReactNode; 
+  children: ReactNode; 
   className?: string; 
   delay?: number 
 }) {

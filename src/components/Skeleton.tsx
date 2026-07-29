@@ -26,7 +26,8 @@ export function ArticleListSkeleton() {
   return (
     <div className="flex flex-col gap-3">
       {[1, 2, 3].map((i) => (
-        <TiltCard key={i}>
+        <div key={i}>
+          <TiltCard>
           <div className="glass-panel p-5 rounded-2xl border border-outline flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
             <div className="flex flex-col gap-3 items-start flex-1 pr-4 w-full">
               <Skeleton className="w-16 h-5 rounded-full" />
@@ -37,7 +38,8 @@ export function ArticleListSkeleton() {
             </div>
             <Skeleton className="hidden sm:block w-10 h-10 rounded-xl shrink-0" />
           </div>
-        </TiltCard>
+          </TiltCard>
+        </div>
       ))}
     </div>
   );

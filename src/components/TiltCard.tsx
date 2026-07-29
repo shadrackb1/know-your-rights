@@ -1,7 +1,7 @@
-import { useRef } from 'react';
+import { useRef, type ReactNode, type MouseEvent } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from 'motion/react';
 
-export default function TiltCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+export default function TiltCard({ children, className = "" }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -15,7 +15,7 @@ export default function TiltCard({ children, className = "" }: { children: React
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-4deg", "4deg"]);
   const background = useMotionTemplate`radial-gradient(300px circle at ${mouseX}px ${mouseY}px, rgba(255, 179, 0, 0.06), transparent 80%)`;
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     const mx = e.clientX - rect.left;

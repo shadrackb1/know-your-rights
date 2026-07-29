@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { Search, ChevronRight, BookOpen, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
@@ -35,7 +35,7 @@ export default function Library() {
     }
   }, []);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
+  const handleSearchSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!search.trim()) return;
     const term = search.trim();

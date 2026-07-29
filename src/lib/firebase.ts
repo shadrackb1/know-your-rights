@@ -17,7 +17,7 @@ try {
   const app = initializeApp(firebaseConfig);
   db = getFirestore(app);
 } catch {
-  // Firebase init failed — will use fallback data
+  db = null;
 }
 
 export { db };

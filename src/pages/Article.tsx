@@ -62,7 +62,7 @@ export default function Article() {
     <AnimatedPage className="flex-1 px-4 py-8 md:py-12 md:px-8 max-w-4xl mx-auto w-full flex flex-col gap-10">
       {/* Progress bar */}
       <motion.div className="fixed top-0 left-0 right-0 h-1 bg-primary/20 origin-left z-[60]" style={{ scaleX }}>
-        <div className="h-full bg-gradient-to-r from-secondary to-accent-light" style={{ width: '100%', transformOrigin: 'left', scaleX }} />
+        <div className="h-full bg-gradient-to-r from-secondary to-accent-light" />
       </motion.div>
 
       {/* Breadcrumb */}
@@ -89,11 +89,12 @@ export default function Article() {
           <div className="w-full aspect-video rounded-3xl overflow-hidden border border-outline relative">
             {article.type === 'video' ? (
               <div className="relative group cursor-pointer">
-                <img
-                  src={article.imageUrl}
-                  alt={article.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
+                  <img
+                    src={article.imageUrl}
+                    alt={article.title}
+                    onError={(e) => e.currentTarget.setAttribute('data-error', '')}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
                   <motion.div
                     whileHover={{ scale: 1.1 }}
@@ -107,7 +108,7 @@ export default function Article() {
                 </div>
               </div>
             ) : (
-              <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover" />
+              <img src={article.imageUrl} alt={article.title} onError={(e) => e.currentTarget.setAttribute('data-error', '')} className="w-full h-full object-cover" />
             )}
           </div>
         )}
@@ -179,25 +180,27 @@ export default function Article() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {related.map((rel) => (
-                <TiltCard key={rel.id}>
-                  <Link
-                    to={`/article/${rel.id}`}
-                    className="group glass-panel block rounded-2xl border border-outline p-5 hover-glow"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <span className="tag-chip mb-2">{rel.tag}</span>
-                        <h4 className="text-base font-heading text-on-background group-hover:text-secondary transition-colors mt-2 leading-snug">
-                          {rel.title}
-                        </h4>
-                        <p className="text-on-surface-variant text-xs mt-1 line-clamp-2">{rel.summary}</p>
+                <div key={rel.id}>
+                  <TiltCard>
+                    <Link
+                      to={`/article/${rel.id}`}
+                      className="group glass-panel block rounded-2xl border border-outline p-5 hover-glow"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <span className="tag-chip mb-2">{rel.tag}</span>
+                          <h4 className="text-base font-heading text-on-background group-hover:text-secondary transition-colors mt-2 leading-snug">
+                            {rel.title}
+                          </h4>
+                          <p className="text-on-surface-variant text-xs mt-1 line-clamp-2">{rel.summary}</p>
+                        </div>
+                        <div className="w-9 h-9 rounded-xl border border-outline flex items-center justify-center text-on-surface-variant group-hover:text-secondary group-hover:border-secondary/30 transition-all shrink-0">
+                          <ArrowRight size={16} />
+                        </div>
                       </div>
-                      <div className="w-9 h-9 rounded-xl border border-outline flex items-center justify-center text-on-surface-variant group-hover:text-secondary group-hover:border-secondary/30 transition-all shrink-0">
-                        <ArrowRight size={16} />
-                      </div>
-                    </div>
-                  </Link>
-                </TiltCard>
+                    </Link>
+                  </TiltCard>
+                </div>
               ))}
             </div>
           </section>

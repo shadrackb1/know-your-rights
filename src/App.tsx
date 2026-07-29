@@ -15,14 +15,16 @@ function AnimatedRoutes() {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
+      <div key={location.pathname}>
+        <Routes location={location}>
         <Route path="/" element={<Home />} />
         <Route path="/library" element={<Library />} />
         <Route path="/article/:id" element={<Article />} />
         <Route path="/ask" element={<Ask />} />
         <Route path="/profile" element={<div className="p-8 text-center text-primary">Profile Page (Coming Soon)</div>} />
         <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+        </Routes>
+      </div>
     </AnimatePresence>
   );
 }

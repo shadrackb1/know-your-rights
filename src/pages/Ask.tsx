@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { Send, History, ArrowRight, ChevronDown, ChevronUp, CheckCircle, HelpCircle, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
@@ -66,7 +66,7 @@ export default function Ask() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!question.trim()) {
       setError("Please enter your question.");
@@ -215,7 +215,8 @@ export default function Ask() {
               { id: "3", tag: "TENANTS", title: "Can a landlord lock my house for rent arrears?" },
               { id: "4", tag: "LABOR", title: "What are my rights if I'm fired without notice?" },
             ].map((item) => (
-              <TiltCard key={item.id}>
+              <div key={item.id}>
+                <TiltCard>
                 <Link
                   to={`/article/${item.id}`}
                   className="glass-panel p-4 rounded-2xl border border-outline flex flex-col gap-2 group hover-glow block"
@@ -228,7 +229,8 @@ export default function Ask() {
                     {item.title}
                   </h4>
                 </Link>
-              </TiltCard>
+                </TiltCard>
+              </div>
             ))}
           </div>
         </ScrollReveal>
@@ -243,7 +245,9 @@ export default function Ask() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {faqs.map((faq, index) => (
-              <FAQAccordion key={index} faq={faq} />
+              <div key={index}>
+                <FAQAccordion faq={faq} />
+              </div>
             ))}
           </div>
         </section>
