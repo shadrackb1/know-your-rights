@@ -1,20 +1,41 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Know Your Rights KE
 
-# Run and deploy your AI Studio app
+Plain-language legal rights guidance for Kenyan citizens — built mobile-first so it works on the phones people actually have.
 
-This contains everything you need to run your app locally.
+## Why
 
-View your app in AI Studio: https://ai.studio/apps/1056a2d8-4249-47f5-875a-25bbae3697c2
+Most people only meet the law when something has gone wrong: an arrest, a landlord dispute, a traffic stop, a workplace issue. The statute exists, but the language does not. This app turns those situations into short, actionable answers.
 
-## Run Locally
+## Features
 
-**Prerequisites:**  Node.js
+- Situation-based Q&A (arrest, housing, employment, traffic, consumer rights)
+- Kiswahili + English
+- Offline-friendly PWA — installable, works with flaky networks
+- Shareable answer cards for WhatsApp and community groups
+- Clean, low-bandwidth UI
 
+## Stack
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- React 19 + TypeScript
+- Vite
+- Tailwind CSS
+- Firebase (auth + Firestore for content)
+- PWA (service worker + installable)
+
+## Run locally
+
+```bash
+npm install
+cp .env.example .env.local   # add your Firebase + API keys
+npm run dev
+```
+
+Open http://localhost:3000
+
+## Related
+
+- [kyr-node](https://github.com/shadrackb1/kyr-node) — Express backend (Helmet, rate limiting, server-rendered views)
+
+## License
+
+MIT
