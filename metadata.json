@@ -1,6 +1,4 @@
-{
+﻿{
   "name": "Know Your Rights KE",
-  "description": "Legal rights explained for everyday Kenyans. The street-legal law series that brings justice to your feed.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "description": "Legal rights explained for everyday Kenyans. Plain-language guidance for arrest, housing, employment, and consumer situations."
 }
