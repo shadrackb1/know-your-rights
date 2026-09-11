@@ -1,6 +1,9 @@
-# Know Your Rights KE
+﻿# Know Your Rights KE
 
-Plain-language legal rights guidance for Kenyan citizens — built mobile-first so it works on the phones people actually have.
+<img src="./assets/header.svg" width="100%" alt="header" />
+
+
+Plain-language legal rights guidance for Kenyan citizens â€” built mobile-first so it works on the phones people actually have.
 
 ## Why
 
@@ -10,7 +13,7 @@ Most people only meet the law when something has gone wrong: an arrest, a landlo
 
 - Situation-based Q&A (arrest, housing, employment, traffic, consumer rights)
 - Kiswahili + English
-- Offline-friendly PWA — installable, works with flaky networks
+- Offline-friendly PWA â€” installable, works with flaky networks
 - Shareable answer cards for WhatsApp and community groups
 - Clean, low-bandwidth UI
 
@@ -34,7 +37,7 @@ Open http://localhost:3000
 
 ## Related
 
-- [kyr-node](https://github.com/shadrackb1/kyr-node) — Express backend (Helmet, rate limiting, server-rendered views)
+- [kyr-node](https://github.com/shadrackb1/kyr-node) â€” Express backend (Helmet, rate limiting, server-rendered views)
 
 ## License
 
