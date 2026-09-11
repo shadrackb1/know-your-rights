@@ -1,43 +1,34 @@
-﻿# Know Your Rights KE
+# Know Your Rights KE
 
-<img src="./assets/header.svg" width="100%" alt="header" />
+<img src="./assets/header.svg" width="100%" alt="Know Your Rights" />
 
-
-Plain-language legal rights guidance for Kenyan citizens â€” built mobile-first so it works on the phones people actually have.
+Plain-language legal rights guidance for Kenyan citizens. Built mobile-first so it works on the phones people actually have.
 
 ## Why
 
-Most people only meet the law when something has gone wrong: an arrest, a landlord dispute, a traffic stop, a workplace issue. The statute exists, but the language does not. This app turns those situations into short, actionable answers.
+Most people meet the law when something has gone wrong: an arrest, a landlord dispute, a traffic stop. The statute exists. The language does not. This turns common situations into short, actionable answers.
 
-## Features
+## Coverage
 
-- Situation-based Q&A (arrest, housing, employment, traffic, consumer rights)
-- Kiswahili + English
-- Offline-friendly PWA â€” installable, works with flaky networks
-- Shareable answer cards for WhatsApp and community groups
-- Clean, low-bandwidth UI
+- Rights during arrest and police encounters
+- Tenant and landlord disputes
+- Employment and labour complaints
+- Consumer protection
+- Where to get formal help
 
 ## Stack
 
-- React 19 + TypeScript
-- Vite
-- Tailwind CSS
-- Firebase (auth + Firestore for content)
-- PWA (service worker + installable)
+React 19, TypeScript, Vite, Tailwind CSS, Firebase.
 
 ## Run locally
 
-```bash
-npm install
-cp .env.example .env.local   # add your Firebase + API keys
-npm run dev
-```
-
-Open http://localhost:3000
+    npm install
+    cp .env.example .env.local
+    npm run dev
 
 ## Related
 
-- [kyr-node](https://github.com/shadrackb1/kyr-node) â€” Express backend (Helmet, rate limiting, server-rendered views)
+- [kyr-node](https://github.com/shadrackb1/kyr-node) backend
 
 ## License
 
